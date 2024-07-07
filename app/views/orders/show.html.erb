@@ -4,10 +4,34 @@
     <h1>Order #<%= @order.id %></h1>
   </header>
 
-  <div class="order-summary jumbotron">
-    <h4>Thank you for your order!</h4>
-  </div>
+  <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th colspan="2">Product</th>
+      <th>Unit Price</th>
+      <th>Quantity</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% LineItem.where(order_id: @order.id).each do |item| %>
+    <%= render 'item', product: Product.find_by(id: item.id), line_item: LineItem.find(item.id) %>   
+   <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="4">
+        TOTAL:
+      </th>
+      <th>
+        <%= humanized_money_with_symbol LineItem.where(order_id: @order.id).sum(:total_price_cents) / 100.0 %>
+      </th>
+    </tr>
+  </tfoot>
+</table>
 
-  <%= link_to "Continue Shopping", root_path, class: 'btn btn-lg btn-primary' %>
+  <div class="order-summary jumbotron">
+    <h4>Thank you for your order, <%= @order.email%>!</h4>
+  </div>
 
 </section>
