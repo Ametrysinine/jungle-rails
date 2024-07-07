@@ -4,6 +4,11 @@
     <h1>Order #<%= @order.id %></h1>
   </header>
 
+  <div class="products">
+  <% LineItem.where(order_id: @order.id).each do |item| %>
+   <%= render 'item', product: Product.find_by(id: item.id), line_item: LineItem.find(item.id) %>   
+  <% end %>
+  </div>
   <div class="order-summary jumbotron">
     <h4>Thank you for your order!</h4>
   </div>
