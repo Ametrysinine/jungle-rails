@@ -1,6 +1,18 @@
 Rails.application.routes.draw do
 
+  get 'about/index'
+  get "/about/", to: "about#index"
   root to: 'products#index'
+  get '/signup', to: 'users#new'
+  post '/users', to: 'users#create'
+
+  # these routes are for showing users a login form, logging them in, and logging them out.
+  get '/login' => 'sessions#new'
+  post '/login' => 'sessions#create'
+  get '/logout' => 'sessions#destroy'
+
+  get '/signup' => 'users#new'
+  post '/users' => 'users#create'
 
   resources :products, only: [:index, :show]
   resources :categories, only: [:show]
@@ -15,6 +27,8 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: 'dashboard#show'
     resources :products, except: [:edit, :update, :show]
+    resources :categories, except: [:edit, :update, :show]
+    get "/categories/", to: "categories#index"
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
