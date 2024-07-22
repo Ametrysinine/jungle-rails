@@ -62,5 +62,43 @@ RSpec.describe User, type: :model do
       expect(user2).not_to be_valid
       expect(user2.errors[:email]).to include("has already been taken")
     end
+    it "authenticates correct passwords" do
+      user = User.new(
+        username: "amanda",
+        email: "amanda@gmail.com",
+        first_name: "Amanda",
+        last_name: "Banks",
+        password: "12345678",
+        password_confirmation: "12345678"
+      )
+      expect(user.authenticate("12345678")).to be_valid
+    end
+    it "doesn't authenticate incorrect passwords" do
+      user = User.new(
+        username: "amanda",
+        email: "amanda@gmail.com",
+        first_name: "Amanda",
+        last_name: "Banks",
+        password: "12345678",
+        password_confirmation: "12345678"
+      )
+      expect(user.authenticate("123456789")).to be_falsey
+    end
+    
+  end
+  describe '.authenticate_with_credentials' do
+    it "should authenticate valid passwords" do
+      user = User.new(
+        username: "amanda",
+        email: "amanda@gmail.com",
+        first_name: "Amanda",
+        last_name: "Banks",
+        password: "12345678",
+        password_confirmation: "12345678"
+      )
+      user.save
+      expect(User.authenticate_with_credentials(email: "amanda@gmail.com", password: "12345678", password_confirmation: "12345678")).to eq(user)
+    end
+
   end
 end
